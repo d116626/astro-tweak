@@ -92,30 +92,29 @@ export function makeEarthTexture(): CanvasTexture {
   );
 }
 
-/** Superfície cinza com crateras para a Lua. */
-export function makeMoonTexture(): CanvasTexture {
-  const canvas = paint(512, 256, (x, y, z) => {
-    const n = fbm(x * 3 + 11, y * 3, z * 3, 6);
-    const v = mix(95, 195, n);
-    return [v, v, v * 1.02];
-  });
-  const ctx = canvas.getContext("2d")!;
-  let seed = 7;
-  const rand = () => {
-    seed = (seed * 16807) % 2147483647;
-    return seed / 2147483647;
-  };
-  for (let i = 0; i < 70; i++) {
-    const cx = rand() * canvas.width;
-    const cy = canvas.height * (0.15 + 0.7 * rand());
-    const r = 2 + rand() * rand() * 14;
-    ctx.fillStyle = "rgba(40,40,45,0.35)";
-    ctx.beginPath();
-    ctx.arc(cx, cy, r, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = "rgba(235,235,240,0.3)";
-    ctx.lineWidth = 1;
-    ctx.stroke();
-  }
-  return toTexture(canvas);
+export type PlanetLook = {
+  base: [number, number, number];
+  accent: [number, number, number];
+  /** Frequência das faixas de latitude (0 = sem faixas). */
+  bands: number;
+  /** Escala do ruído de superfície. */
+  noise: number;
+};
+
+/** Textura procedural genérica para planetas (rochosos ou gasosos). */
+export function makePlanetTexture({ base, accent, bands, noise }: PlanetLook): CanvasTexture {
+  return toTexture(
+    paint(256, 128, (x, y, z, lat) => {
+      const n = fbm(x * noise + 3, y * noise, z * noise, 4);
+      const t =
+        bands > 0
+          ? (0.5 + 0.5 * Math.sin(lat * bands + n * 4)) * 0.7 + n * 0.3
+          : n;
+      return [
+        mix(base[0], accent[0], t),
+        mix(base[1], accent[1], t),
+        mix(base[2], accent[2], t),
+      ];
+    }),
+  );
 }

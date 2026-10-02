@@ -11,7 +11,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Astro Tweak",
   description:
-    "Mexa em um parâmetro da Terra (Lua, Sol, gravidade...) e veja o que muda.",
+    "Sandbox do sistema solar: mude massa, distância, inclinação e tamanho dos planetas e veja a gravidade reagir.",
 };
 
 export const viewport: Viewport = {

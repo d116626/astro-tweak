@@ -1,5 +1,7 @@
 # Astro Tweak — notas de conceito
 
+> **Direção atual:** sandbox do sistema solar inteiro, com gravidade de N corpos real (leapfrog, `frontend/scenarios/solar-system/nbody.ts`). Por planeta dá para mexer em massa, distância ao Sol, inclinação da órbita e do eixo e tamanho. Os cenários da Lua descritos abaixo foram removidos. Próximas fases: G, massa do Sol e outras constantes; luas, asteroides e planetas anões.
+
 Nome: **Astro Tweak** (repo `astro-tweak`).
 
 ## Ideia em uma frase

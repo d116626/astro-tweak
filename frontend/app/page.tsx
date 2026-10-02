@@ -1,5 +1,5 @@
-import { MoonScenarioView } from "@/components/moon/moon-scenario";
+import { SpaceView } from "@/components/space/space-view";
 
 export default function Home() {
-  return <MoonScenarioView />;
+  return <SpaceView />;
 }

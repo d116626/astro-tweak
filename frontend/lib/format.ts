@@ -1,20 +1,15 @@
 const nf = (maximumFractionDigits: number) =>
   new Intl.NumberFormat("pt-BR", { maximumFractionDigits });
 
-/** 8 -> "8x", 0.5 -> "0,5x", 0.0123 -> "0,012x". */
-export function formatTimes(ratio: number): string {
-  const digits = ratio >= 10 ? 0 : ratio >= 1 ? 1 : ratio >= 0.1 ? 2 : 3;
-  return `${nf(digits).format(ratio)}x`;
+/** Número com precisão adaptada à magnitude: 0,012 / 0,5 / 8,2 / 318 / 12.400. */
+export function formatValue(value: number): string {
+  const digits = value >= 100 ? 0 : value >= 10 ? 1 : value >= 1 ? 2 : value >= 0.1 ? 2 : 3;
+  return nf(digits).format(value);
 }
 
-export function formatKm(km: number): string {
-  return `${nf(0).format(km)} km`;
-}
-
-export function formatDays(days: number): string {
-  return `${nf(days < 10 ? 1 : 0).format(days)} dias`;
-}
-
-export function formatDegrees(deg: number): string {
-  return `${nf(deg < 1 ? 2 : 1).format(deg)}°`;
+/** Dias para períodos curtos, anos para os longos. */
+export function formatPeriod(days: number): string {
+  return days >= 730
+    ? `${nf(1).format(days / 365.256)} anos`
+    : `${nf(days < 10 ? 1 : 0).format(days)} dias`;
 }

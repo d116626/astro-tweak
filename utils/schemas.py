@@ -10,32 +10,24 @@ class CamelModel(BaseModel):
     model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
 
 
-class MoonConstants(CamelModel):
-    moon_distance_km: float = Field(gt=0)
-    moon_radius_km: float = Field(gt=0)
-    moon_eccentricity: float = Field(ge=0, lt=1)
-    earth_radius_km: float = Field(gt=0)
-    sun_radius_km: float = Field(gt=0)
-    sun_distance_km: float = Field(gt=0)
-    mu_earth_moon: float = Field(gt=0)
-    year_days: float = Field(gt=0)
-    solar_tide_ratio: float = Field(ge=0)
-
-
-class MoonDerived(CamelModel):
-    roche_limit_km: float = Field(gt=0)
-    geostationary_km: float = Field(gt=0)
-    moon_angular_diameter_deg: float = Field(gt=0)
-    sun_angular_diameter_deg: float = Field(gt=0)
-
-
-class Anchor(CamelModel):
+class Planet(CamelModel):
     id: str
-    label: str
-    distance_ratio: float = Field(gt=0)
+    name: str
+    semi_major_axis_au: float = Field(gt=0)
+    eccentricity: float = Field(ge=0, lt=1)
+    inclination_deg: float
+    longitude_ascending_node_deg: float
+    longitude_perihelion_deg: float
+    mean_longitude_deg: float  # época J2000
+    orbital_period_days: float = Field(gt=0)
+    radius_km: float = Field(gt=0)
+    mass_kg: float = Field(gt=0)
+    rotation_period_hours: float = Field(gt=0)  # módulo; o sentido vem da inclinação axial
+    axial_tilt_deg: float = Field(ge=0, le=180)
 
 
-class MoonDataset(CamelModel):
-    constants: MoonConstants
-    derived: MoonDerived
-    anchors: list[Anchor]
+class SolarSystemDataset(CamelModel):
+    sun_radius_km: float = Field(gt=0)
+    sun_mass_kg: float = Field(gt=0)
+    gravitational_constant: float = Field(gt=0)
+    planets: list[Planet]
