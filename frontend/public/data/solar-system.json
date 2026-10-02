@@ -15,6 +15,8 @@
       "orbitalPeriodDays": 87.969,
       "radiusKm": 2439.7,
       "massKg": 3.3011e+23,
+      "meanTemperatureC": 167.0,
+      "moons": 0,
       "rotationPeriodHours": 1407.6,
       "axialTiltDeg": 0.034
     },
@@ -30,6 +32,8 @@
       "orbitalPeriodDays": 224.701,
       "radiusKm": 6051.8,
       "massKg": 4.8675e+24,
+      "meanTemperatureC": 464.0,
+      "moons": 0,
       "rotationPeriodHours": 5832.5,
       "axialTiltDeg": 177.36
     },
@@ -45,6 +49,8 @@
       "orbitalPeriodDays": 365.256,
       "radiusKm": 6371.0,
       "massKg": 5.9722e+24,
+      "meanTemperatureC": 15.0,
+      "moons": 1,
       "rotationPeriodHours": 23.9345,
       "axialTiltDeg": 23.44
     },
@@ -60,6 +66,8 @@
       "orbitalPeriodDays": 686.98,
       "radiusKm": 3389.5,
       "massKg": 6.4171e+23,
+      "meanTemperatureC": -65.0,
+      "moons": 2,
       "rotationPeriodHours": 24.6229,
       "axialTiltDeg": 25.19
     },
@@ -75,6 +83,8 @@
       "orbitalPeriodDays": 4332.589,
       "radiusKm": 69911.0,
       "massKg": 1.8982e+27,
+      "meanTemperatureC": -110.0,
+      "moons": 95,
       "rotationPeriodHours": 9.925,
       "axialTiltDeg": 3.13
     },
@@ -90,6 +100,8 @@
       "orbitalPeriodDays": 10759.22,
       "radiusKm": 58232.0,
       "massKg": 5.6834e+26,
+      "meanTemperatureC": -140.0,
+      "moons": 146,
       "rotationPeriodHours": 10.656,
       "axialTiltDeg": 26.73
     },
@@ -105,6 +117,8 @@
       "orbitalPeriodDays": 30685.4,
       "radiusKm": 25362.0,
       "massKg": 8.681e+25,
+      "meanTemperatureC": -195.0,
+      "moons": 28,
       "rotationPeriodHours": 17.24,
       "axialTiltDeg": 97.77
     },
@@ -120,6 +134,8 @@
       "orbitalPeriodDays": 60189.0,
       "radiusKm": 24622.0,
       "massKg": 1.02413e+26,
+      "meanTemperatureC": -200.0,
+      "moons": 16,
       "rotationPeriodHours": 16.11,
       "axialTiltDeg": 28.32
     }

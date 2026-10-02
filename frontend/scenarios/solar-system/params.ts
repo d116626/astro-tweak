@@ -60,3 +60,24 @@ export const orbitalPeriodDays = (semiMajorAu: number) =>
 
 /** Raio em km. */
 export const radiusKm = (p: BodyParams) => p.radiusEarth * EARTH_RADIUS_KM;
+
+/** Densidade média (g/cm³). */
+export const density = ({ massEarth, radiusEarth }: BodyParams) =>
+  (massEarth * EARTH_MASS_KG) /
+  ((4 / 3) * Math.PI * (radiusEarth * EARTH_RADIUS_KM * 1000) ** 3) /
+  1000;
+
+/** Velocidade de escape (km/s). */
+export const escapeVelocity = ({ massEarth, radiusEarth }: BodyParams) =>
+  Math.sqrt(
+    (2 * SOLAR.gravitationalConstant * massEarth * EARTH_MASS_KG) /
+      (radiusEarth * EARTH_RADIUS_KM * 1000),
+  ) / 1000;
+
+/** Posição (0..1) do valor no slider. */
+export const paramToT = (d: ParamDef, v: number) =>
+  d.log ? Math.log(v / d.min) / Math.log(d.max / d.min) : (v - d.min) / (d.max - d.min);
+
+/** Valor do parâmetro para a posição (0..1) do slider. */
+export const tToParam = (d: ParamDef, t: number) =>
+  d.log ? d.min * Math.pow(d.max / d.min, t) : d.min + t * (d.max - d.min);

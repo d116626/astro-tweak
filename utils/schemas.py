@@ -22,6 +22,8 @@ class Planet(CamelModel):
     orbital_period_days: float = Field(gt=0)
     radius_km: float = Field(gt=0)
     mass_kg: float = Field(gt=0)
+    mean_temperature_c: float
+    moons: int = Field(ge=0)
     rotation_period_hours: float = Field(gt=0)  # módulo; o sentido vem da inclinação axial
     axial_tilt_deg: float = Field(ge=0, le=180)
 

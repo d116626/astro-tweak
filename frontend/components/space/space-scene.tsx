@@ -6,6 +6,7 @@ import { OrbitControls, Stars } from "@react-three/drei";
 import * as THREE from "three";
 import { FocusLabel } from "@/components/space/labels";
 import { BODY_COLORS, PLANET_LOOKS } from "@/components/space/planet-looks";
+import { simTime } from "@/lib/sim-time";
 import { makeEarthTexture, makePlanetTexture } from "@/lib/procedural-textures";
 import {
   advance,
@@ -39,6 +40,7 @@ const ORBIT_SEGMENTS = 128;
 const ORBIT_REFRESH_S = 0.12;
 
 type Positions = Record<string, THREE.Vector3>;
+
 type AllParams = Record<string, BodyParams>;
 
 export type SpaceSceneProps = {
@@ -63,24 +65,14 @@ const createPositions = (): Positions =>
     ]),
   );
 
-/** Raio que a câmera deve enquadrar para cada foco. */
-function focusRadius(
-  focus: string,
-  params: AllParams,
-  lost: Record<string, LostReason>,
-): number {
-  if (focus === "sun") {
-    const farthest = Math.max(
-      ...SOLAR.planets
-        .filter((p) => !lost[p.id])
-        .map((p) => params[p.id].semiMajorAu),
-    );
-    return sceneDistance(farthest) * 1.1;
-  }
-  const planet = SOLAR.planets.find((p) => p.id === focus);
-  if (!planet) return 10;
-  const ring = planet.id === "saturn" ? 2.4 : 1;
-  return sceneRadiusOf(radiusKm(params[focus])) * ring * 1.8;
+/** Raio que a câmera enquadra na visão geral: até o planeta mais distante. */
+function systemRadius(params: AllParams, lost: Record<string, LostReason>): number {
+  const farthest = Math.max(
+    ...SOLAR.planets
+      .filter((p) => !lost[p.id])
+      .map((p) => params[p.id].semiMajorAu),
+  );
+  return sceneDistance(farthest) * 1.1;
 }
 
 /** Elipse da órbita atual do corpo (osculadora), atualizada ao longo da simulação. */
@@ -252,7 +244,9 @@ function SimClock({
 
   useFrame((_, delta) => {
     if (!stateRef.current || applied.current?.signal !== resetSignal) {
-      stateRef.current = initialState(new Date());
+      const now = new Date();
+      stateRef.current = initialState(now);
+      simTime.ms = simTime.startMs = now.getTime();
       applied.current = { signal: resetSignal, params: DEFAULT_PARAMS };
     }
     const state = stateRef.current;
@@ -273,7 +267,9 @@ function SimClock({
     applied.current!.params = params;
 
     if (!paused) {
-      const lost = advance(state, Math.min(delta, 0.05) * timeScale);
+      const days = Math.min(delta, 0.05) * timeScale;
+      simTime.ms += days * 86_400_000;
+      const lost = advance(state, days);
       for (const b of lost) onLost(b.id, b.lost!);
     }
 
@@ -335,7 +331,8 @@ function CameraRig({
 
     if (lastFitKey.current !== fitKey) {
       lastFitKey.current = fitKey;
-      fitting.current = true;
+      // Só a visão geral enquadra sozinha; num planeta a câmera mantém a distância.
+      fitting.current = focus === "sun";
     }
     if (last.current.focus !== focus) {
       last.current.focus = focus;
@@ -425,7 +422,7 @@ export function SpaceScene({
 
       <CameraRig
         focus={focus}
-        radius={focusRadius(focus, params, lost)}
+        radius={systemRadius(params, lost)}
         positionsRef={positionsRef}
       />
       <OrbitControls
