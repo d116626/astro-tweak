@@ -1,4 +1,10 @@
 import { buildLines, fieldAt, type Charge, type Pt } from "@/labs/eletromagnetismo/quatro-leis/lib/field";
+import {
+  polesOf,
+  stepMagnets,
+  THICK,
+  type Magnet,
+} from "@/labs/eletromagnetismo/quatro-leis/lib/magnetsim";
 import { COLORS, SceneBase } from "@/labs/eletromagnetismo/quatro-leis/scenes/base";
 import {
   arrowHead,
@@ -7,15 +13,35 @@ import {
   strokeFieldLines,
 } from "@/labs/eletromagnetismo/quatro-leis/scenes/draw";
 
-type Magnet = { x: number; y: number; a: number; half: number; tx: number; ty: number };
 type Drag = { kind: "move"; i: number; dx: number; dy: number } | { kind: "turn"; i: number; off: number };
 export type MagnetTool = "mover" | "cortar";
 
-const THICK = 24;
 const MIN_HALF = 15;
 const MAX_MAGNETS = 12;
 const TIP = 20;
 const NEEDLE_GAP = 58;
+const FILING_GAP = 15;
+const FILING_LEN = 4.5;
+
+/** Rampa da intensidade do campo (fraco → forte): azul-acinzentado, azul, ciano, branco-quente. */
+const RAMP: [number, number, number][] = [
+  [74, 93, 146],
+  [63, 143, 216],
+  [72, 200, 255],
+  [255, 241, 201],
+];
+const B_WEAK = 0.0006; // |B| (unidades do campo) que vira a cor mais fraca
+const B_STRONG = 0.03; // ...e a mais forte, colado num polo
+const BANDS = 8;
+
+const rampColor = (t: number) => {
+  const x = t * (RAMP.length - 1);
+  const i = Math.min(RAMP.length - 2, Math.floor(x));
+  const f = x - i;
+  const c = RAMP[i].map((v, k) => Math.round(v + (RAMP[i + 1][k] - v) * f));
+  return `rgb(${c[0]},${c[1]},${c[2]})`;
+};
+const BAND_COLORS = Array.from({ length: BANDS }, (_, b) => rampColor(b / (BANDS - 1)));
 
 /** Sem monopolo: cortar um ímã nunca separa os polos, só cria um ímã novo. */
 export class MagnetsScene extends SceneBase {
@@ -27,28 +53,58 @@ export class MagnetsScene extends SceneBase {
   private hover = "default";
   private notice = "";
   private noticeT = 0;
+  private forces = false;
+  private filings = true;
+  private fx = new Float32Array(0);
+  private fy = new Float32Array(0);
+  private fa = new Float32Array(0);
 
   protected layout() {
     this.magnets = [this.make(this.w / 2, this.h / 2, 0, Math.min(90, this.w * 0.14))];
     this.dirty = true;
+    this.scatterFilings();
   }
 
   protected rescale(sx: number, sy: number) {
     for (const m of this.magnets) {
       m.x *= sx;
       m.y *= sy;
-      m.tx *= sx;
-      m.ty *= sy;
     }
     this.dirty = true;
+    this.scatterFilings();
+  }
+
+  /** Limalha: grade com tremida, orientações sorteadas (sempre o mesmo sorteio). */
+  private scatterFilings() {
+    const cols = Math.ceil(this.w / FILING_GAP);
+    const rows = Math.ceil(this.h / FILING_GAP);
+    const n = cols * rows;
+    this.fx = new Float32Array(n);
+    this.fy = new Float32Array(n);
+    this.fa = new Float32Array(n);
+    let seed = 12345;
+    const rnd = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296);
+    for (let i = 0; i < n; i++) {
+      this.fx[i] = (i % cols) * FILING_GAP + rnd() * FILING_GAP;
+      this.fy[i] = Math.floor(i / cols) * FILING_GAP + rnd() * FILING_GAP;
+      this.fa[i] = rnd() * Math.PI;
+    }
   }
 
   private make(x: number, y: number, a: number, half: number): Magnet {
-    return { x, y, a, half, tx: x, ty: y };
+    return { x, y, a, half, vx: 0, vy: 0, w: 0 };
   }
 
   setTool(t: MagnetTool) {
     this.tool = t;
+  }
+
+  setForces(on: boolean) {
+    this.forces = on;
+  }
+
+  setFilings(on: boolean) {
+    this.filings = on;
   }
 
   reset() {
@@ -89,10 +145,10 @@ export class MagnetsScene extends SceneBase {
     const c2 = (lx + m.half) / 2;
     const a = this.make(m.x + ux * c1, m.y + uy * c1, m.a, h1);
     const b = this.make(m.x + ux * c2, m.y + uy * c2, m.a, h2);
-    a.tx = a.x - ux * 14;
-    a.ty = a.y - uy * 14;
-    b.tx = b.x + ux * 14;
-    b.ty = b.y + uy * 14;
+    a.vx = -ux * 80;
+    a.vy = -uy * 80;
+    b.vx = ux * 80;
+    b.vy = uy * 80;
     this.magnets.splice(i, 1, a, b);
     this.dirty = true;
   }
@@ -125,8 +181,8 @@ export class MagnetsScene extends SceneBase {
     }
     const m = this.magnets[d.i];
     if (d.kind === "move") {
-      m.x = m.tx = Math.min(this.w - 10, Math.max(10, p.x + d.dx));
-      m.y = m.ty = Math.min(this.h - 10, Math.max(10, p.y + d.dy));
+      m.x = Math.min(this.w - 10, Math.max(10, p.x + d.dx));
+      m.y = Math.min(this.h - 10, Math.max(10, p.y + d.dy));
     } else {
       const grabbedSouth = Math.cos(m.a - d.off) * (p.x - m.x) + Math.sin(m.a - d.off) * (p.y - m.y) < 0;
       const side = grabbedSouth ? Math.PI : 0;
@@ -152,14 +208,7 @@ export class MagnetsScene extends SceneBase {
   }
 
   private poles(): Charge[] {
-    return this.magnets.flatMap((m) => {
-      const ux = Math.cos(m.a) * m.half;
-      const uy = Math.sin(m.a) * m.half;
-      return [
-        { x: m.x + ux, y: m.y + uy, q: 1 },
-        { x: m.x - ux, y: m.y - uy, q: -1 },
-      ];
-    });
+    return this.magnets.flatMap(polesOf);
   }
 
   private inBody(x: number, y: number) {
@@ -170,13 +219,15 @@ export class MagnetsScene extends SceneBase {
   }
 
   protected render(ctx: CanvasRenderingContext2D, dt: number) {
+    const held = this.drag ? this.drag.i : -1;
+    const sub = Math.min(8, Math.max(1, Math.ceil(dt * 240)));
+    for (let k = 0; k < sub; k++) stepMagnets(this.magnets, dt / sub, this.forces, held);
     for (const m of this.magnets) {
-      const k = Math.min(1, dt * 9);
-      if (Math.abs(m.tx - m.x) > 0.1 || Math.abs(m.ty - m.y) > 0.1) {
-        m.x += (m.tx - m.x) * k;
-        m.y += (m.ty - m.y) * k;
-        this.dirty = true;
-      }
+      if (m.x < 10 || m.x > this.w - 10) m.vx = 0;
+      if (m.y < 10 || m.y > this.h - 10) m.vy = 0;
+      m.x = Math.min(this.w - 10, Math.max(10, m.x));
+      m.y = Math.min(this.h - 10, Math.max(10, m.y));
+      if (Math.abs(m.vx) + Math.abs(m.vy) > 0.15 || Math.abs(m.w) > 0.01) this.dirty = true;
     }
     const poles = this.poles();
     if (this.dirty) {
@@ -184,7 +235,64 @@ export class MagnetsScene extends SceneBase {
       this.dirty = false;
     }
 
-    // agulhas de bússola
+    if (this.filings) this.drawFilings(ctx, poles, dt);
+    else this.drawNeedles(ctx, poles);
+
+    strokeFieldLines(ctx, this.lines, `rgba(255,176,72,${this.filings ? 0.35 : 0.55})`, 1.2);
+    this.drawMagnets(ctx);
+    this.drawHud(ctx, dt);
+  }
+
+  private drawFilings(ctx: CanvasRenderingContext2D, poles: Charge[], dt: number) {
+    const k = Math.min(1, dt * 12);
+    const buckets: number[][] = Array.from({ length: BANDS }, () => []);
+    const span = Math.log(B_STRONG / B_WEAK);
+    for (let i = 0; i < this.fx.length; i++) {
+      const x = this.fx[i];
+      const y = this.fy[i];
+      if (this.inBody(x, y)) continue;
+      const f = fieldAt(poles, x, y);
+      const mag = Math.hypot(f.x, f.y);
+      if (mag < 1e-9) continue;
+      let diff = Math.atan2(f.y, f.x) - this.fa[i];
+      diff = ((((diff + Math.PI / 2) % Math.PI) + Math.PI) % Math.PI) - Math.PI / 2; // eixo, sem sentido
+      this.fa[i] += diff * k;
+      const t = Math.max(0, Math.min(1, Math.log(mag / B_WEAK) / span));
+      buckets[Math.min(BANDS - 1, Math.floor(t * BANDS))].push(i);
+    }
+    ctx.lineWidth = 1.2;
+    ctx.lineCap = "round";
+    ctx.globalAlpha = 0.75;
+    buckets.forEach((ids, b) => {
+      ctx.strokeStyle = BAND_COLORS[b];
+      ctx.beginPath();
+      for (const i of ids) {
+        const dx = Math.cos(this.fa[i]) * FILING_LEN;
+        const dy = Math.sin(this.fa[i]) * FILING_LEN;
+        ctx.moveTo(this.fx[i] - dx, this.fy[i] - dy);
+        ctx.lineTo(this.fx[i] + dx, this.fy[i] + dy);
+      }
+      ctx.stroke();
+    });
+    ctx.globalAlpha = 1;
+    this.drawLegend(ctx);
+  }
+
+  private drawLegend(ctx: CanvasRenderingContext2D) {
+    const bw = 110;
+    const x = this.w - 16 - bw;
+    const y = this.h - 30;
+    const g = ctx.createLinearGradient(x, 0, x + bw, 0);
+    BAND_COLORS.forEach((c, i) => g.addColorStop(i / (BANDS - 1), c));
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.roundRect(x, y, bw, 5, 3);
+    ctx.fill();
+    hudText(ctx, [{ text: "campo fraco", size: 10 }], x, y + 9, "left");
+    hudText(ctx, [{ text: "forte", size: 10 }], x + bw, y + 9, "right");
+  }
+
+  private drawNeedles(ctx: CanvasRenderingContext2D, poles: Charge[]) {
     const cols = Math.floor(this.w / NEEDLE_GAP);
     const rows = Math.floor(this.h / NEEDLE_GAP);
     const ox = (this.w - (cols - 1) * NEEDLE_GAP) / 2;
@@ -216,9 +324,9 @@ export class MagnetsScene extends SceneBase {
         ctx.restore();
       }
     }
+  }
 
-    strokeFieldLines(ctx, this.lines, "rgba(255,176,72,0.55)", 1.2);
-
+  private drawMagnets(ctx: CanvasRenderingContext2D) {
     for (const m of this.magnets) {
       ctx.save();
       ctx.translate(m.x, m.y);
@@ -241,7 +349,9 @@ export class MagnetsScene extends SceneBase {
       ctx.setLineDash([]);
       ctx.restore();
     }
+  }
 
+  private drawHud(ctx: CanvasRenderingContext2D, dt: number) {
     const n = this.magnets.length;
     hudText(
       ctx,

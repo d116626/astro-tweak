@@ -3,6 +3,7 @@
 import {
   CircleMinus,
   CirclePlus,
+  Crosshair,
   Hand,
   Repeat2,
   RotateCcw,
@@ -50,11 +51,27 @@ export function QuatroLeisView() {
 
   const [phase, setPhase] = useState(0);
   const [bubble, setBubble] = useState(true);
+  const [probe, setProbe] = useState<0 | 1 | -1>(0);
   const [tool, setTool] = useState<MagnetTool>("mover");
   const [auto, setAuto] = useState(true);
   const [continuous, setContinuous] = useState(false);
   const [slow, setSlow] = useState(false);
   const [view, setView] = useState<WaveView>("ambos");
+  const [maxwell, setMaxwell] = useState(true);
+  const [forces, setForces] = useState(false);
+  const [filings, setFilings] = useState(true);
+
+  const cycleView = () => {
+    const next = view === "ambos" ? "E" : view === "E" ? "B" : "ambos";
+    setView(next);
+    wave.setView(next);
+  };
+
+  const cycleProbe = () => {
+    const next = probe === 0 ? 1 : probe === 1 ? -1 : 0;
+    setProbe(next);
+    gauss.setProbe(next);
+  };
 
   const pickTool = (t: MagnetTool) => {
     setTool(t);
@@ -101,6 +118,13 @@ export function QuatroLeisView() {
                 >
                   Bolha
                 </Pill>
+                <Pill
+                  active={probe !== 0}
+                  label="Carga de prova: clique no mapa para soltar uma carga pequena"
+                  onClick={cycleProbe}
+                >
+                  <Crosshair /> Prova{probe > 0 ? " +" : probe < 0 ? " −" : ""}
+                </Pill>
                 <Pill label="Reiniciar" onClick={() => gauss.reset()}>
                   <RotateCcw />
                 </Pill>
@@ -120,7 +144,26 @@ export function QuatroLeisView() {
                 >
                   <Scissors /> Cortar
                 </Pill>
-                <Pill label="Reiniciar" onClick={() => magnets.reset()}>
+                <Divider />
+              <Pill
+                active={forces}
+                onClick={() => {
+                  setForces((v) => !v);
+                  magnets.setForces(!forces);
+                }}
+              >
+                Forças
+              </Pill>
+              <Pill
+                active={filings}
+                onClick={() => {
+                  setFilings((v) => !v);
+                  magnets.setFilings(!filings);
+                }}
+              >
+                Limalha
+              </Pill>
+              <Pill label="Reiniciar" onClick={() => magnets.reset()}>
                   <RotateCcw />
                 </Pill>
               </>
@@ -165,19 +208,19 @@ export function QuatroLeisView() {
                 >
                   <Snail /> Lenta
                 </Pill>
-                <Divider />
-                {(["ambos", "E", "B"] as const).map((v) => (
-                  <Pill
-                    key={v}
-                    active={view === v}
-                    onClick={() => {
-                      setView(v);
-                      wave.setView(v);
-                    }}
-                  >
-                    {v === "ambos" ? "E + B" : v}
-                  </Pill>
-                ))}
+                <Pill
+                  active={maxwell}
+                  label="Termo de Maxwell: ligar ou desligar"
+                  onClick={() => {
+                    setMaxwell((v) => !v);
+                    wave.setMaxwell(!maxwell);
+                  }}
+                >
+                  Maxwell
+                </Pill>
+                <Pill label="Trocar os campos mostrados" onClick={cycleView}>
+                  Campos: {view === "ambos" ? "E + B" : view}
+                </Pill>
                 <Pill label="Limpar a onda" onClick={() => wave.clear()}>
                   <RotateCcw />
                 </Pill>

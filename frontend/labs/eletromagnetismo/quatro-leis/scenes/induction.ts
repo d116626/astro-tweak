@@ -8,6 +8,9 @@ const COIL_R = 60; // meia-altura da bobina (px)
 const COIL_RX = 13;
 const EMF_FULL = 8; // EMF (linhas/s) em que a lâmpada chega a ~63% do brilho
 const ELECTRONS = 12;
+const HIST = 240; // amostras do osciloscópio (4 s a 60 por segundo)
+const PHI_RANGE = 8; // linhas, para cima e para baixo
+const EMF_RANGE = 30;
 
 /** Faraday: o que acende a lâmpada é o fluxo mudando, não o ímã perto. */
 export class InductionScene extends SceneBase {
@@ -25,6 +28,9 @@ export class InductionScene extends SceneBase {
   private bright = 0;
   private spin = 0;
   private hover = "default";
+  private histPhi = new Float32Array(HIST);
+  private histEmf = new Float32Array(HIST);
+  private histAcc = 0;
 
   protected layout() {
     this.cy = this.h * 0.4;
@@ -51,6 +57,8 @@ export class InductionScene extends SceneBase {
   }
 
   reset() {
+    this.histPhi.fill(0);
+    this.histEmf.fill(0);
     this.flipped = false;
     this.layout();
     this.prevPhi = null;
@@ -150,6 +158,16 @@ export class InductionScene extends SceneBase {
     this.drawCoil(ctx, "front");
     this.drawLamp(ctx);
 
+    this.histAcc = Math.min(this.histAcc + dt, 3 / 60);
+    while (this.histAcc >= 1 / 60) {
+      this.histAcc -= 1 / 60;
+      this.histPhi.copyWithin(0, 1);
+      this.histEmf.copyWithin(0, 1);
+      this.histPhi[HIST - 1] = phi;
+      this.histEmf[HIST - 1] = this.emf;
+    }
+    this.drawScope(ctx);
+
     const changing = Math.abs(this.emf) > 1.5;
     hudText(
       ctx,
@@ -165,6 +183,50 @@ export class InductionScene extends SceneBase {
       this.w - 16,
       16,
     );
+  }
+
+  /** Osciloscópio: o fluxo Φ e, embaixo, a tensão, que é a inclinação do fluxo. */
+  private drawScope(ctx: CanvasRenderingContext2D) {
+    const gw = Math.min(300, this.w * 0.46);
+    const gh = 48;
+    const x0 = 16;
+    const trace = (
+      data: Float32Array,
+      range: number,
+      top: number,
+      color: string,
+      label: string,
+    ) => {
+      ctx.fillStyle = "rgba(0,0,0,0.6)";
+      ctx.strokeStyle = "rgba(255,255,255,0.12)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.roundRect(x0, top, gw, gh, 8);
+      ctx.fill();
+      ctx.stroke();
+      ctx.strokeStyle = "rgba(255,255,255,0.15)";
+      ctx.beginPath();
+      ctx.moveTo(x0, top + gh / 2);
+      ctx.lineTo(x0 + gw, top + gh / 2);
+      ctx.stroke();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.8;
+      ctx.lineJoin = "round";
+      ctx.beginPath();
+      for (let i = 0; i < HIST; i++) {
+        const v = Math.max(-1, Math.min(1, data[i] / range));
+        const px = x0 + (i / (HIST - 1)) * gw;
+        const py = top + gh / 2 - v * (gh / 2 - 5);
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+      hudText(ctx, [{ text: label, size: 10, color: color }], x0 + 8, top + 5, "left");
+    };
+    const top2 = this.h - 16 - gh;
+    const top1 = top2 - gh - 8;
+    trace(this.histPhi, PHI_RANGE, top1, COLORS.amber, "FLUXO Φ");
+    trace(this.histEmf, EMF_RANGE, top2, COLORS.cyan, "TENSÃO ε = −dΦ/dt");
   }
 
   private drawCoil(ctx: CanvasRenderingContext2D, part: "back" | "front") {

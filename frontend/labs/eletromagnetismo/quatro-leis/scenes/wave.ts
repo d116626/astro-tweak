@@ -38,6 +38,10 @@ export class WaveScene extends SceneBase {
     this.sim.setContinuous(on);
   }
 
+  setMaxwell(on: boolean) {
+    this.sim.setMaxwell(on);
+  }
+
   setSlow(on: boolean) {
     this.slow = on;
   }
@@ -136,11 +140,18 @@ export class WaveScene extends SceneBase {
     const delay = (RECV_CELL - SRC_CELL) / STEPS_PER_SEC;
     hudText(
       ctx,
-      [
-        { text: "ATRASO DA LUZ", size: 10 },
-        { text: `${delay.toFixed(1)} s`, size: 34, weight: 600, color: COLORS.text },
-        { text: "a receptora só sente depois", size: 13, color: COLORS.text },
-      ],
+      this.sim.maxwell
+        ? [
+            { text: "ATRASO DA LUZ", size: 10 },
+            { text: `${delay.toFixed(1)} s`, size: 34, weight: 600, color: COLORS.text },
+            { text: "a receptora só sente depois", size: 13, color: COLORS.text },
+          ]
+        : [
+            { text: "SEM O TERMO DE MAXWELL", size: 10, color: COLORS.amber },
+            { text: "sem onda", size: 34, weight: 600, color: COLORS.text },
+            { text: "B surge em todo lugar de uma vez", size: 13, color: COLORS.text },
+            { text: "e a receptora não sente nada", size: 13, color: COLORS.text },
+          ],
       this.w - 16,
       16,
     );

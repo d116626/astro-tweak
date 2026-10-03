@@ -22,6 +22,8 @@ export const PHASES: Phase[] = [
       "Engula as duas cargas: o total vira zero",
       "Adicione mais cargas e veja o número subir",
       "Estique a bolha pela alça branca",
+      "Ligue a Prova e clique no mapa: a carga segue as linhas até a de sinal oposto",
+      "Troque a prova para − e veja ela ir no sentido contrário",
     ],
     formula: "∮ E · dA = Q / ε₀",
     formulaText:
@@ -36,14 +38,15 @@ export const PHASES: Phase[] = [
     text: "Corte um ímã quantas vezes quiser: cada pedaço ganha um polo norte e um sul novos. As linhas do campo magnético nunca começam nem terminam, elas fecham em laço. Por isso há sempre tantos polos N quanto S.",
     tryThis: [
       "Escolha a tesoura e corte um ímã ao meio",
-      "Corte os pedaços de novo, e de novo",
-      "Gire os ímãs pela ponta e veja as bússolas obedecerem",
-      "Aproxime dois ímãs e veja as linhas se combinarem",
+      "Ligue as forças e solte as metades: elas querem se juntar de novo",
+      "Aproxime dois ímãs: polos iguais se afastam, opostos se grudam",
+      "Gire um ímã pela ponta e veja a limalha acompanhar",
+      "Desligue a limalha para ver as bússolas",
     ],
     formula: "∮ B · dA = 0",
     formulaText:
       "O fluxo magnético por qualquer superfície fechada é zero: não existe carga magnética isolada.",
-    note: "Simplificação: o campo fora do ímã é desenhado com polos pontuais. As linhas tracejadas mostram o caminho de volta por dentro.",
+    note: "Simplificação: o campo e as forças usam polos pontuais, em 2D. As linhas tracejadas mostram o caminho de volta por dentro.",
   },
   {
     id: "faraday",
@@ -55,7 +58,8 @@ export const PHASES: Phase[] = [
       "Arraste o ímã para dentro e para fora da bobina",
       "Deixe-o parado bem no meio: a luz apaga",
       "Vire o ímã e note o sentido dos elétrons",
-      "Mexa devagar e depois rápido",
+      "Mexa devagar e depois rápido, e olhe o gráfico da tensão",
+      "Compare: o fluxo sobe e a tensão aparece só enquanto ele muda",
     ],
     formula: "ε = −dΦ/dt",
     formulaText:
@@ -72,11 +76,12 @@ export const PHASES: Phase[] = [
       "Dê um solavanco na carga da esquerda, ou use o pulso",
       "Ligue a onda contínua e veja a receptora balançar no ritmo",
       "Use a câmera lenta para ver E e B se revezando",
-      "Mostre só E ou só B",
+      "Desligue o termo de Maxwell e repita: o B aparece de uma vez e nada viaja",
+      "Troque os campos para ver só E ou só B",
     ],
     formula: "∮ B · dl = μ₀ (I + ε₀ dΦE/dt)",
     formulaText:
       "Corrente e campo elétrico variável criam campo magnético ao redor. Junto com Faraday, é o que faz a onda andar.",
-    note: "Simplificação: onda plana em 1D, e a luz leva segundos para cruzar a tela só para dar tempo de ver.",
+    note: "Simplificação: onda plana em 1D, e a luz leva segundos para cruzar a tela só para dar tempo de ver. Com o termo de Maxwell desligado, o B de uma folha de corrente aparece em todo lugar na hora, como era no Ampère original.",
   },
 ];

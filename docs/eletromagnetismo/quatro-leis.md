@@ -27,6 +27,18 @@ o que se via.
   espalhada em 3 células (¼, ½, ¼) para não excitar o modo xadrez da grade. A carga é puxada de volta
   ao eixo, então o deslocamento total é zero e sobra só a onda. Código: `lib/wave1d.ts`, `lib/wavesim.ts`.
 
+## Interações extras
+- **Cargas (1):** o botão "Prova" (desligada → + → −) solta, a cada clique, uma carga de prova em
+  repouso. Ela é empurrada pelo campo (a favor se for +, contra se for −), com atrito leve, deixa
+  rastro e some ao ser capturada por uma carga de sinal oposto ou ao sair da tela. Até 6 ao mesmo
+  tempo. Não altera o campo nem a contagem da bolha (`lib/probe.ts`).
+- **Ímãs (2):** polos de ímãs diferentes interagem com a mesma lei 1/r do campo (iguais se repelem,
+  opostos se atraem), com atrito, torque e um contato que impede que se atravessem
+  (`lib/magnetsim.ts`). A limalha é uma grade de segmentos que giram até o eixo do campo local.
+- **Indução (3):** osciloscópio com os últimos 4 s de Φ e de ε = −dΦ/dt.
+- **Ondas (4):** o botão "Maxwell" tira o termo ∂E/∂t. Sem ele, o B de uma corrente aparece em todo
+  lugar ao mesmo tempo (proporcional à corrente de agora), não há E propagando e a receptora não sente nada.
+
 ## Simplificações (sinalizadas no painel)
 - Mundo plano: o campo cai como 1/r, e não 1/r².
 - O campo fora do ímã usa polos pontuais; dentro, o caminho de volta é só desenhado.

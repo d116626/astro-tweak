@@ -4,6 +4,13 @@ import {
   type Charge,
   type Pt,
 } from "@/labs/eletromagnetismo/quatro-leis/lib/field";
+import {
+  isDone,
+  newProbe,
+  stepProbe,
+  trailPush,
+  type Probe,
+} from "@/labs/eletromagnetismo/quatro-leis/lib/probe";
 import { COLORS, SceneBase } from "@/labs/eletromagnetismo/quatro-leis/scenes/base";
 import {
   chargeDot,
@@ -14,6 +21,7 @@ import {
 
 const MAX_CHARGES = 8;
 const GRAB = 20;
+const MAX_PROBES = 6;
 
 type Drag =
   | { kind: "charge"; i: number; dx: number; dy: number }
@@ -29,6 +37,9 @@ export class GaussScene extends SceneBase {
   private dirty = true;
   private drag: Drag | null = null;
   private hover = "default";
+  private probes: Probe[] = [];
+  /** 0 = desligada; ±1 = clique solta uma carga de prova desse sinal. */
+  private probeSign: 0 | 1 | -1 = 0;
 
   protected layout() {
     const m = Math.min(this.w, this.h);
@@ -69,8 +80,13 @@ export class GaussScene extends SceneBase {
     this.dirty = true;
   }
 
+  setProbe(sign: 0 | 1 | -1) {
+    this.probeSign = sign;
+  }
+
   reset() {
     this.layout();
+    this.probes = [];
     this.dirty = true;
   }
 
@@ -91,6 +107,11 @@ export class GaussScene extends SceneBase {
     if (best >= 0) {
       const c = this.charges[best];
       this.drag = { kind: "charge", i: best, dx: c.x - p.x, dy: c.y - p.y };
+      return;
+    }
+    if (this.probeSign !== 0) {
+      this.probes.push(newProbe(p.x, p.y, this.probeSign));
+      if (this.probes.length > MAX_PROBES) this.probes.shift();
       return;
     }
     if (!this.bubbleOn) return;
@@ -126,6 +147,7 @@ export class GaussScene extends SceneBase {
 
   private hitCursor(p: Pt) {
     if (this.charges.some((c) => Math.hypot(p.x - c.x, p.y - c.y) <= GRAB)) return "grab";
+    if (this.probeSign !== 0) return "crosshair";
     if (!this.bubbleOn) return "default";
     const d = Math.hypot(p.x - this.bubble.x, p.y - this.bubble.y);
     if (Math.abs(d - this.bubble.r) < 16) return "nwse-resize";
@@ -136,7 +158,7 @@ export class GaussScene extends SceneBase {
     return this.drag ? (this.drag.kind === "size" ? "nwse-resize" : "grabbing") : this.hover;
   }
 
-  protected render(ctx: CanvasRenderingContext2D) {
+  protected render(ctx: CanvasRenderingContext2D, dt: number) {
     if (this.dirty) {
       this.lines = buildLines(this.charges, { w: this.w, h: this.h });
       this.dirty = false;
@@ -151,6 +173,7 @@ export class GaussScene extends SceneBase {
     }
     strokeFieldLines(ctx, this.lines, "rgba(255,176,72,0.8)");
     for (const c of this.charges) chargeDot(ctx, c.x, c.y, c.q);
+    this.drawProbes(ctx, dt);
 
     if (!this.bubbleOn) {
       hudText(ctx, [{ text: "Ligue a bolha para contar as linhas.", size: 12 }], this.w - 16, 16);
@@ -192,5 +215,36 @@ export class GaussScene extends SceneBase {
       this.w - 16,
       16,
     );
+  }
+
+  private drawProbes(ctx: CanvasRenderingContext2D, dt: number) {
+    const steps = Math.min(8, Math.max(1, Math.ceil(dt * 240)));
+    for (const p of this.probes) {
+      for (let i = 0; i < steps; i++) stepProbe(p, this.charges, dt / steps, this.w, this.h);
+      trailPush(p);
+    }
+    this.probes = this.probes.filter((p) => !isDone(p));
+
+    ctx.lineWidth = 2;
+    ctx.lineCap = "round";
+    for (const p of this.probes) {
+      const color = p.q > 0 ? COLORS.plus : COLORS.minus;
+      const k = p.dying ? Math.max(0, p.fade / 0.7) : 1;
+      const n = p.trail.length;
+      const chunks = 5;
+      ctx.strokeStyle = color;
+      for (let c = 0; c < chunks; c++) {
+        const a = Math.floor(((n - 1) * c) / chunks);
+        const e = Math.floor(((n - 1) * (c + 1)) / chunks) + 1;
+        ctx.globalAlpha = (0.12 + (0.7 * (c + 1)) / chunks) * k;
+        ctx.beginPath();
+        ctx.moveTo(p.trail[a].x, p.trail[a].y);
+        for (let i = a + 1; i <= e && i < n; i++) ctx.lineTo(p.trail[i].x, p.trail[i].y);
+        ctx.stroke();
+      }
+      ctx.globalAlpha = k;
+      if (!p.dying) chargeDot(ctx, p.x, p.y, p.q, 6);
+    }
+    ctx.globalAlpha = 1;
   }
 }

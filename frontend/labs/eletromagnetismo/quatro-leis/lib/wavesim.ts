@@ -26,6 +26,8 @@ export class WaveSim {
   recvY = 0;
   recvV = 0;
   continuous = false;
+  /** Com `false`, vale só o Ampère antigo: o campo elétrico que varia não gera magnetismo. */
+  maxwell = true;
   dragging = false;
   pointerOff = 0;
   private simT = 0;
@@ -47,8 +49,25 @@ export class WaveSim {
     }
   }
 
+  /** Liga ou desliga o termo de Maxwell (recomeça a onda, para não herdar o que já viajava). */
+  setMaxwell(on: boolean) {
+    this.maxwell = on;
+    this.wave.clear();
+    this.recvY = this.recvV = 0;
+  }
+
   firePulse() {
     this.pulse = 0;
+  }
+
+  /**
+   * Sem o termo de Maxwell, o B de uma corrente aparece em todo lugar ao mesmo tempo
+   * (proporcional à corrente de agora), e nenhum E se propaga: não existe onda.
+   */
+  private instantField(current: number) {
+    const { e, b, n } = this.wave;
+    e.fill(0);
+    for (let i = 0; i < n; i++) b[i] = i === SRC_CELL ? 0 : (i < SRC_CELL ? 0.5 : -0.5) * current;
   }
 
   /** Avança `steps` passos de simulação. */
@@ -63,7 +82,9 @@ export class WaveSim {
         this.simT++;
         next = -SINE_AMP * Math.sin((2 * Math.PI * this.simT) / PERIOD_STEPS);
       } else next = this.off * 0.95;
-      this.wave.step(SRC_CELL, K * (next - this.off));
+      const current = K * (next - this.off);
+      if (this.maxwell) this.wave.step(SRC_CELL, current);
+      else this.instantField(current);
       this.off = next;
 
       const e = this.wave.e[RECV_CELL];
