@@ -1,8 +1,8 @@
 # Astro Tweak — notas de conceito do lab
 
-> **Direção atual:** sandbox do sistema solar inteiro, com gravidade de N corpos real (leapfrog, `frontend/labs/astro-tweak/lib/nbody.ts`). Por planeta dá para mexer em massa, distância ao Sol, inclinação da órbita e do eixo e tamanho. Os cenários da Lua descritos abaixo foram removidos. Próximas fases: G, massa do Sol e outras constantes; luas, asteroides e planetas anões.
+> **Direção atual:** sandbox do sistema solar inteiro, com gravidade de N corpos real (leapfrog, `frontend/labs/astrofisica/astro-tweak/lib/nbody.ts`). Por planeta dá para mexer em massa, distância ao Sol, inclinação da órbita e do eixo e tamanho. Os cenários da Lua descritos abaixo foram removidos. Próximas fases: G, massa do Sol e outras constantes; luas, asteroides e planetas anões.
 
-Lab do **SciHub** (rota `/labs/astro-tweak`). A estrutura do repositório está descrita no `README.md`.
+Lab do **SciHub** (rota `/labs/astrofisica/astro-tweak`). A estrutura do repositório está descrita no `README.md`.
 
 ## Ideia em uma frase
 Um simulador interativo de "e se" para a Terra: você mexe em um parâmetro (Lua, Sol, gravidade, eixo...) e vê, com números reais, o que muda no céu, no seu corpo e no mundo. Sem quiz, sem certo ou errado.

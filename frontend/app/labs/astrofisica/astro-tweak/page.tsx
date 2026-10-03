@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SpaceView } from "@/labs/astro-tweak/components/space-view";
+import { SpaceView } from "@/labs/astrofisica/astro-tweak/components/space-view";
 
 export const metadata: Metadata = {
   title: "Astro Tweak · SciHub",

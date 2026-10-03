@@ -8,8 +8,8 @@ e NASA Planetary Fact Sheet. A Terra usa os elementos do baricentro Terra-Lua.
 from pathlib import Path
 
 from utils.common.export import export_dataset
-from utils.labs.astro_tweak import constants as c
-from utils.labs.astro_tweak.schemas import Planet, SolarSystemDataset
+from utils.labs.astrofisica.astro_tweak import constants as c
+from utils.labs.astrofisica.astro_tweak.schemas import Planet, SolarSystemDataset
 
 # id, nome, a (UA), e, I (°), Ω (°), ϖ (°), L (°), período (d), raio (km), massa (kg), rotação (h), obliquidade (°), temperatura média (°C), luas conhecidas
 _PLANETS: list[tuple[str, str, float, float, float, float, float, float, float, float, float, float, float, float, int]] = [
@@ -52,5 +52,5 @@ def build_solar_system_dataset() -> SolarSystemDataset:
     )
 
 
-def export_solar_system_dataset(lab: str) -> Path:
-    return export_dataset(lab, "solar-system.json", build_solar_system_dataset())
+def export_solar_system_dataset(area: str, lab: str) -> Path:
+    return export_dataset(area, lab, "solar-system.json", build_solar_system_dataset())

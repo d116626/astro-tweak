@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { simTime } from "@/labs/astro-tweak/lib/sim-time";
-import { formatPeriod } from "@/labs/astro-tweak/lib/format";
+import { simTime } from "@/labs/astrofisica/astro-tweak/lib/sim-time";
+import { formatPeriod } from "@/labs/astrofisica/astro-tweak/lib/format";
 
 /** Ano simulado e tempo decorrido. Atualiza o DOM direto, sem re-render do React. */
 export function SimClockDisplay() {

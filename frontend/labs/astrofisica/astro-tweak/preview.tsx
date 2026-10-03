@@ -1,5 +1,5 @@
 import { OrbitField, type OrbitRing } from "@/components/hub/orbit-field";
-import { BODY_COLORS } from "@/labs/astro-tweak/components/planet-looks";
+import { BODY_COLORS } from "@/labs/astrofisica/astro-tweak/components/planet-looks";
 
 // Raios comprimidos (a^0,45) e períodos pela 3ª lei de Kepler, só para ilustrar.
 const PLANETS: [id: string, r: number, size: number][] = [

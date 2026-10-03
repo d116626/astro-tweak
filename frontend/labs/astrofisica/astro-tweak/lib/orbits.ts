@@ -1,9 +1,9 @@
 /**
  * Sistema solar: posições keplerianas (funções puras, sem UI).
- * Elementos vêm do pipeline Python (utils/labs/astro_tweak/solar_system.py).
+ * Elementos vêm do pipeline Python (utils/labs/astrofisica/astro_tweak/solar_system.py).
  * Referencial da cena: y para cima (polo norte da eclíptica), distâncias em UA.
  */
-import solarData from "@/public/data/astro-tweak/solar-system.json";
+import solarData from "@/public/data/astrofisica/astro-tweak/solar-system.json";
 
 export const SOLAR = solarData;
 export type PlanetData = (typeof solarData.planets)[number];

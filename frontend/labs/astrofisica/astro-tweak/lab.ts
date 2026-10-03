@@ -1,4 +1,4 @@
-import { AstroTweakPreview } from "@/labs/astro-tweak/preview";
+import { AstroTweakPreview } from "@/labs/astrofisica/astro-tweak/preview";
 import type { Lab } from "@/labs/types";
 
 export const astroTweak: Lab = {

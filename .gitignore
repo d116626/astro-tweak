@@ -1,8 +1,8 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# data (cada lab tem a sua pasta: data/raw/<lab>, data/process/<lab>)
-/data/*/*/*
-!/data/*/*/.gitkeep
+# data (organizado por área e lab: data/raw/<area>/<lab>, data/process/<area>/<lab>)
+/data/*/*/*/*
+!/data/*/*/*/.gitkeep
 
 # python
 .venv/

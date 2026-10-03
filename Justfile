@@ -7,9 +7,9 @@ default:
 run-frontend:
     cd frontend && npm run dev
 
-# Executa o pipeline de dados Python. Sem argumento roda todos os labs; ex.: `just pipeline astro-tweak`
-pipeline *labs:
-    uv run python -m utils.pipeline {{labs}}
+# Executa o pipeline de dados Python. Sem argumento roda todos os labs; ex.: `just pipeline astrofisica` ou `just pipeline astrofisica/astro-tweak`
+pipeline *alvos:
+    uv run python -m utils.pipeline {{alvos}}
 
 # Sincroniza dependências do Python via uv
 py-sync:

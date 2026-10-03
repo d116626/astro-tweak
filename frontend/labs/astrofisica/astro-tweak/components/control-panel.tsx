@@ -3,12 +3,12 @@
 import Link from "next/link";
 import { useState } from "react";
 import { ChevronDown, House, Pause, Play, RotateCcw } from "lucide-react";
-import { BODY_COLORS } from "@/labs/astro-tweak/components/planet-looks";
-import { SimClockDisplay } from "@/labs/astro-tweak/components/sim-clock";
+import { BODY_COLORS } from "@/labs/astrofisica/astro-tweak/components/planet-looks";
+import { SimClockDisplay } from "@/labs/astrofisica/astro-tweak/components/sim-clock";
 import { Slider } from "@/components/ui/slider";
-import { formatPeriod, formatValue } from "@/labs/astro-tweak/lib/format";
-import type { LostReason } from "@/labs/astro-tweak/lib/nbody";
-import { SOLAR } from "@/labs/astro-tweak/lib/orbits";
+import { formatPeriod, formatValue } from "@/labs/astrofisica/astro-tweak/lib/format";
+import type { LostReason } from "@/labs/astrofisica/astro-tweak/lib/nbody";
+import { SOLAR } from "@/labs/astrofisica/astro-tweak/lib/orbits";
 import {
   DEFAULT_PARAMS,
   density,
@@ -20,7 +20,7 @@ import {
   surfaceGravity,
   tToParam,
   type BodyParams,
-} from "@/labs/astro-tweak/lib/params";
+} from "@/labs/astrofisica/astro-tweak/lib/params";
 
 const LOST_TEXT: Record<LostReason, string> = {
   sun: "engolido pelo Sol",
