@@ -7,9 +7,9 @@ e NASA Planetary Fact Sheet. A Terra usa os elementos do baricentro Terra-Lua.
 
 from pathlib import Path
 
-from utils.constants import FRONTEND_PUBLIC_DATA_DIR, MAX_PUBLIC_JSON_BYTES, PROCESS_DIR
-from utils.physics import constants as c
-from utils.schemas import Planet, SolarSystemDataset
+from utils.common.export import export_dataset
+from utils.labs.astro_tweak import constants as c
+from utils.labs.astro_tweak.schemas import Planet, SolarSystemDataset
 
 # id, nome, a (UA), e, I (°), Ω (°), ϖ (°), L (°), período (d), raio (km), massa (kg), rotação (h), obliquidade (°), temperatura média (°C), luas conhecidas
 _PLANETS: list[tuple[str, str, float, float, float, float, float, float, float, float, float, float, float, float, int]] = [
@@ -52,12 +52,5 @@ def build_solar_system_dataset() -> SolarSystemDataset:
     )
 
 
-def export_solar_system_dataset() -> Path:
-    """Valida e exporta para data/process e frontend/public/data."""
-    payload = build_solar_system_dataset().model_dump_json(by_alias=True, indent=2)
-    (PROCESS_DIR / "solar-system.json").write_text(payload, encoding="utf-8")
-    out = FRONTEND_PUBLIC_DATA_DIR / "solar-system.json"
-    out.write_text(payload, encoding="utf-8")
-    if out.stat().st_size > MAX_PUBLIC_JSON_BYTES:
-        raise ValueError(f"{out} excede {MAX_PUBLIC_JSON_BYTES} bytes")
-    return out
+def export_solar_system_dataset(lab: str) -> Path:
+    return export_dataset(lab, "solar-system.json", build_solar_system_dataset())

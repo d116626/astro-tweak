@@ -1,8 +1,8 @@
-# SciHub — notas de conceito
+# Astro Tweak — notas de conceito do lab
 
-> **Direção atual:** sandbox do sistema solar inteiro, com gravidade de N corpos real (leapfrog, `frontend/scenarios/solar-system/nbody.ts`). Por planeta dá para mexer em massa, distância ao Sol, inclinação da órbita e do eixo e tamanho. Os cenários da Lua descritos abaixo foram removidos. Próximas fases: G, massa do Sol e outras constantes; luas, asteroides e planetas anões.
+> **Direção atual:** sandbox do sistema solar inteiro, com gravidade de N corpos real (leapfrog, `frontend/labs/astro-tweak/lib/nbody.ts`). Por planeta dá para mexer em massa, distância ao Sol, inclinação da órbita e do eixo e tamanho. Os cenários da Lua descritos abaixo foram removidos. Próximas fases: G, massa do Sol e outras constantes; luas, asteroides e planetas anões.
 
-Nome: **SciHub** (repo `scihub`).
+Lab do **SciHub** (rota `/labs/astro-tweak`). A estrutura do repositório está descrita no `README.md`.
 
 ## Ideia em uma frase
 Um simulador interativo de "e se" para a Terra: você mexe em um parâmetro (Lua, Sol, gravidade, eixo...) e vê, com números reais, o que muda no céu, no seu corpo e no mundo. Sem quiz, sem certo ou errado.
@@ -82,30 +82,6 @@ Fluxo: `fetch -> data/raw -> process -> data/process -> export -> frontend/publi
 - **Globos** (eixo, rotação, nível do mar): projeção em globo do MapLibre. Three.js só se o "afastar" 3D valer o custo.
 - Física em funções puras de TypeScript (uma por cenário), separadas da UI, fáceis de testar.
 - **Python (`uv`) só para dados**, na pasta `utils/`, fora do bundle do site.
-
-### Estrutura sugerida
-```
-scihub/
-  pyproject.toml          # deps Python (uv)
-  Justfile                # atalhos: pipeline, run-frontend, typecheck, lint
-  notes.md
-  data/
-    raw/                  # downloads brutos (fora do git)
-    process/              # intermediários (fora do git)
-  utils/                  # scripts Python de dados
-    pipeline.py
-    constants.py
-    schemas.py
-    fetchers/
-    processors/
-  frontend/
-    public/data/          # JSONs finais consumidos pelo site (no git)
-    app/                  # rotas Next (sem src/, igual ao MapTap)
-    scenarios/<nome>/     # física (funções puras), dados e config do cenário
-    components/           # sliders, vistas Da Terra / De fora, afastar
-    lib/                  # escala, formatação, frases compartilháveis
-  .github/workflows/      # deploy no GitHub Pages
-```
 
 ## Roadmap
 1. **MVP:** 3 cenários com as duas vistas: **Lua**, **distância do Sol**, **gravidade**. Começar pela Lua (efeito visual forte das marés).

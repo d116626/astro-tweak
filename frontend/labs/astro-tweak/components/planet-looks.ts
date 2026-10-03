@@ -1,4 +1,4 @@
-import type { PlanetLook } from "@/lib/procedural-textures";
+import type { PlanetLook } from "@/labs/astro-tweak/lib/procedural-textures";
 
 /** Aparência dos planetas (cores e textura procedural). A Terra tem textura própria. */
 export const PLANET_LOOKS: Record<string, PlanetLook> = {

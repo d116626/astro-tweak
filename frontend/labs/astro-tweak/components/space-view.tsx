@@ -2,12 +2,12 @@
 
 import dynamic from "next/dynamic";
 import { useState } from "react";
-import { ControlPanel } from "@/components/space/control-panel";
-import type { LostReason } from "@/scenarios/solar-system/nbody";
-import { DEFAULT_PARAMS, type BodyParams } from "@/scenarios/solar-system/params";
+import { ControlPanel } from "@/labs/astro-tweak/components/control-panel";
+import type { LostReason } from "@/labs/astro-tweak/lib/nbody";
+import { DEFAULT_PARAMS, type BodyParams } from "@/labs/astro-tweak/lib/params";
 
 const SpaceScene = dynamic(
-  () => import("@/components/space/space-scene").then((m) => m.SpaceScene),
+  () => import("@/labs/astro-tweak/components/space-scene").then((m) => m.SpaceScene),
   { ssr: false },
 );
 

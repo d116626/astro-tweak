@@ -1,13 +1,6 @@
-"""Schemas pydantic para validar os dados antes de exportar.
-O JSON exportado usa camelCase (consumido pelo TypeScript).
-"""
+from pydantic import Field
 
-from pydantic import BaseModel, ConfigDict, Field
-from pydantic.alias_generators import to_camel
-
-
-class CamelModel(BaseModel):
-    model_config = ConfigDict(alias_generator=to_camel, populate_by_name=True)
+from utils.common.schemas import CamelModel
 
 
 class Planet(CamelModel):

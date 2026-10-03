@@ -4,10 +4,10 @@ import { useEffect, useMemo, useRef, type RefObject } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, Stars } from "@react-three/drei";
 import * as THREE from "three";
-import { FocusLabel } from "@/components/space/labels";
-import { BODY_COLORS, PLANET_LOOKS } from "@/components/space/planet-looks";
-import { simTime } from "@/lib/sim-time";
-import { makeEarthTexture, makePlanetTexture } from "@/lib/procedural-textures";
+import { FocusLabel } from "@/labs/astro-tweak/components/labels";
+import { BODY_COLORS, PLANET_LOOKS } from "@/labs/astro-tweak/components/planet-looks";
+import { simTime } from "@/labs/astro-tweak/lib/sim-time";
+import { makeEarthTexture, makePlanetTexture } from "@/labs/astro-tweak/lib/procedural-textures";
 import {
   advance,
   initialState,
@@ -18,20 +18,20 @@ import {
   setSemiMajorAxis,
   type LostReason,
   type NBodyState,
-} from "@/scenarios/solar-system/nbody";
-import { SOLAR, type PlanetData } from "@/scenarios/solar-system/orbits";
+} from "@/labs/astro-tweak/lib/nbody";
+import { SOLAR, type PlanetData } from "@/labs/astro-tweak/lib/orbits";
 import {
   DEFAULT_PARAMS,
   EARTH_MASS_KG,
   radiusKm,
   type BodyParams,
-} from "@/scenarios/solar-system/params";
+} from "@/labs/astro-tweak/lib/params";
 import {
   compressPosition,
   sceneDistance,
   sceneRadiusOf,
   SUN_SCENE_RADIUS,
-} from "@/scenarios/solar-system/scale";
+} from "@/labs/astro-tweak/lib/scale";
 
 /** Velocidade visual máxima de rotação (voltas por segundo). */
 const MAX_REV_PER_SECOND = 0.4;

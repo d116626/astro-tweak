@@ -1,13 +1,14 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
-import { ChevronDown, Pause, Play, RotateCcw } from "lucide-react";
-import { BODY_COLORS } from "@/components/space/planet-looks";
-import { SimClockDisplay } from "@/components/space/sim-clock";
+import { ArrowLeft, ChevronDown, Pause, Play, RotateCcw } from "lucide-react";
+import { BODY_COLORS } from "@/labs/astro-tweak/components/planet-looks";
+import { SimClockDisplay } from "@/labs/astro-tweak/components/sim-clock";
 import { Slider } from "@/components/ui/slider";
-import { formatPeriod, formatValue } from "@/lib/format";
-import type { LostReason } from "@/scenarios/solar-system/nbody";
-import { SOLAR } from "@/scenarios/solar-system/orbits";
+import { formatPeriod, formatValue } from "@/labs/astro-tweak/lib/format";
+import type { LostReason } from "@/labs/astro-tweak/lib/nbody";
+import { SOLAR } from "@/labs/astro-tweak/lib/orbits";
 import {
   DEFAULT_PARAMS,
   density,
@@ -19,7 +20,7 @@ import {
   surfaceGravity,
   tToParam,
   type BodyParams,
-} from "@/scenarios/solar-system/params";
+} from "@/labs/astro-tweak/lib/params";
 
 const LOST_TEXT: Record<LostReason, string> = {
   sun: "engolido pelo Sol",
@@ -306,9 +307,17 @@ export function ControlPanel(props: ControlPanelProps) {
     <aside className="flex max-h-[52dvh] shrink-0 flex-col border-t border-white/10 bg-zinc-950 text-white pb-[env(safe-area-inset-bottom)] md:max-h-none md:w-[22rem] md:pb-0 md:border-l md:border-t-0">
       <div className="space-y-3 px-4 pb-3 pt-3 md:pt-4">
         <div className="flex items-center justify-between">
-          <span className="text-[10px] font-medium uppercase tracking-widest text-white/40">
-            SciHub
-          </span>
+          <div className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-widest">
+            <Link
+              href="/"
+              className="-m-2 flex items-center gap-1.5 p-2 text-white/40 transition-colors hover:text-white"
+            >
+              <ArrowLeft className="size-3" />
+              SciHub
+            </Link>
+            <span className="text-white/20">/</span>
+            <span className="text-white/70">Astro Tweak</span>
+          </div>
           <button
             type="button"
             aria-label={open ? "Recolher painel" : "Expandir painel"}
