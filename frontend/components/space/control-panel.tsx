@@ -307,7 +307,7 @@ export function ControlPanel(props: ControlPanelProps) {
       <div className="space-y-3 px-4 pb-3 pt-3 md:pt-4">
         <div className="flex items-center justify-between">
           <span className="text-[10px] font-medium uppercase tracking-widest text-white/40">
-            Astro Tweak
+            SciHub
           </span>
           <button
             type="button"

@@ -67,7 +67,7 @@ jobs:
       - name: Build with Next.js
         working-directory: frontend
         env:
-          NEXT_PUBLIC_BASE_PATH: /astro-tweak
+          NEXT_PUBLIC_BASE_PATH: /scihub
         run: npm run build
 
       - name: Disable Jekyll for GitHub Pages

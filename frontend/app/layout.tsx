@@ -9,7 +9,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Astro Tweak",
+  title: "SciHub",
   description:
     "Sandbox do sistema solar: mude massa, distância, inclinação e tamanho dos planetas e veja a gravidade reagir.",
 };

@@ -1,4 +1,4 @@
-# Astro Tweak command runner
+# SciHub command runner
 
 default:
     @just --list

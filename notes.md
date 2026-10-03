@@ -1,8 +1,8 @@
-# Astro Tweak — notas de conceito
+# SciHub — notas de conceito
 
 > **Direção atual:** sandbox do sistema solar inteiro, com gravidade de N corpos real (leapfrog, `frontend/scenarios/solar-system/nbody.ts`). Por planeta dá para mexer em massa, distância ao Sol, inclinação da órbita e do eixo e tamanho. Os cenários da Lua descritos abaixo foram removidos. Próximas fases: G, massa do Sol e outras constantes; luas, asteroides e planetas anões.
 
-Nome: **Astro Tweak** (repo `astro-tweak`).
+Nome: **SciHub** (repo `scihub`).
 
 ## Ideia em uma frase
 Um simulador interativo de "e se" para a Terra: você mexe em um parâmetro (Lua, Sol, gravidade, eixo...) e vê, com números reais, o que muda no céu, no seu corpo e no mundo. Sem quiz, sem certo ou errado.
@@ -73,7 +73,7 @@ Fluxo: `fetch -> data/raw -> process -> data/process -> export -> frontend/publi
 
 ## Stack (mesma do MapTap)
 - **Site estático no GitHub Pages**, TypeScript.
-- Next.js com `output: "export"`, `trailingSlash: true`, `basePath` por env (`NEXT_PUBLIC_BASE_PATH`, padrão `/astro-tweak` em produção) e `images.unoptimized`.
+- Next.js com `output: "export"`, `trailingSlash: true`, `basePath` por env (`NEXT_PUBLIC_BASE_PATH`, padrão `/scihub` em produção) e `images.unoptimized`.
 - Tailwind v4 + shadcn/ui (base-ui) + lucide-react.
 - Workflow de deploy no GitHub Actions reaproveitando o `nextjs.yml` do MapTap.
 - Scripts: `typecheck` (`tsc --noEmit`) e `lint`.
@@ -85,7 +85,7 @@ Fluxo: `fetch -> data/raw -> process -> data/process -> export -> frontend/publi
 
 ### Estrutura sugerida
 ```
-astro-tweak/
+scihub/
   pyproject.toml          # deps Python (uv)
   Justfile                # atalhos: pipeline, run-frontend, typecheck, lint
   notes.md

@@ -1,7 +1,7 @@
 [project]
-name = "astro-tweak-utils"
+name = "scihub-utils"
 version = "0.1.0"
-description = "Data capture and processing scripts for astro-tweak"
+description = "Data capture and processing scripts for scihub"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
