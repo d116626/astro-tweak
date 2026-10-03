@@ -114,6 +114,17 @@
   }
 }
 
+@keyframes wave-ring {
+  from {
+    transform: scale(0.04);
+    opacity: 0.9;
+  }
+  to {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
 @keyframes rise {
   from {
     opacity: 0;
@@ -130,14 +141,71 @@
   animation: orbit 60s linear infinite;
 }
 
+.wave-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: wave-ring 5s ease-out infinite;
+}
+
 .rise {
   opacity: 0;
   animation: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
   animation-delay: var(--delay, 0s);
 }
 
+/* Miniaturas animadas dos cards de As 4 leis (labs/eletromagnetismo/quatro-leis/components/card-art.tsx). */
+@keyframes qa-flow {
+  to { stroke-dashoffset: -8; }
+}
+@keyframes qa-pulse {
+  50% { transform: scale(1.18); }
+}
+@keyframes qa-wobble {
+  0%, 100% { transform: rotate(-9deg); }
+  50% { transform: rotate(9deg); }
+}
+@keyframes qa-slide {
+  from { transform: translateX(-26px); }
+  to { transform: translateX(22px); }
+}
+@keyframes qa-glow {
+  0%, 100% { opacity: 0.12; }
+  50% { opacity: 1; }
+}
+@keyframes qa-travel {
+  to { transform: translateX(40px); }
+}
+@keyframes qa-bob {
+  50% { transform: translateY(12px); }
+}
+
+.qa-flow {
+  stroke-dasharray: 3 5;
+  animation: qa-flow 0.9s linear infinite;
+}
+.qa-pulse,
+.qa-wobble,
+.qa-bob {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.qa-pulse { animation: qa-pulse 1.6s ease-in-out infinite; }
+.qa-wobble { animation: qa-wobble 3s ease-in-out infinite; }
+.qa-slide { animation: qa-slide 2s ease-in-out infinite alternate; }
+.qa-glow { animation: qa-glow 2s ease-in-out infinite; }
+.qa-travel { animation: qa-travel 1.4s linear infinite; }
+.qa-bob { animation: qa-bob 1.4s ease-in-out infinite; }
+
 @media (prefers-reduced-motion: reduce) {
-  .orbit {
+  .orbit,
+  .wave-ring,
+  .qa-flow,
+  .qa-pulse,
+  .qa-wobble,
+  .qa-slide,
+  .qa-glow,
+  .qa-travel,
+  .qa-bob {
     animation: none;
   }
   .rise {

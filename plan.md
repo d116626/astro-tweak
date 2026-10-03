@@ -14,13 +14,16 @@ Estados: **feito**, **próximo**, **na manga** (ideia guardada). Ao criar um lab
 
 ## Eletromagnetismo
 
-- **próximo: Playground de ondas EM (FDTD)** (`eletromagnetismo/ondas-fdtd`, nome provisório)
-  - Resolve as 4 equações de Maxwell numa grade 2D em tempo real (Yee, modo TM: Ez, Hx, Hy).
-  - Você pinta fontes e materiais reais (água, vidro, cobre, ferrite) e roda experimentos canônicos:
-    antena de Hertz, fenda dupla de Young, refração de Snell, efeito pelicular, gaiola de Faraday.
-  - Painel mostra qual termo (∂B/∂t, ∇×E, ∇·E...) domina no ponto sob o cursor.
-  - Dados reais (pipeline Python): ε, μ e σ de materiais; a coincidência c = 1/√(μ₀ε₀) de Maxwell.
-  - Atenção: valores digitados de memória precisam ser conferidos na fonte (CRC, NIST).
+- **feito:** As 4 leis (`eletromagnetismo/quatro-leis`): quatro brinquedos, um por lei de Maxwell
+  (bolha de Gauss, ímãs sem monopolo, indução de Faraday, onda de Ampère-Maxwell).
+  Notas em `docs/eletromagnetismo/quatro-leis.md`.
+- **na manga: Maxwell ao vivo (FDTD avançado)** (`eletromagnetismo/ondas-fdtd`, nome provisório)
+  - Resolve as equações numa grade 2D em tempo real (Yee, modo TM: Ez, Hx, Hy), com materiais reais
+    (água, vidro, cobre, ferrite) e experimentos: antena de Hertz, fenda dupla, refração, gaiola de Faraday.
+  - Foi tentado e descartado como primeira versão: sem base conceitual, a interação não ensinava nada.
+    Só faz sentido depois de "As 4 leis", como camada avançada.
+  - Dados reais (pipeline Python): ε, μ e σ de materiais. Valores de memória precisam ser conferidos
+    na fonte (CRC, NIST).
 - **na manga: Ímã caindo no tubo de cobre**
   - Experimento canônico de Faraday e Lenz: ímã de neodímio em tubos de cobre, alumínio, latão, PVC e
     até supercondutor; a corrente induzida freia a queda até a velocidade terminal.

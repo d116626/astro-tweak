@@ -1,0 +1,37 @@
+# As 4 leis: notas de conceito
+
+Lab do **SciHub** (rota `/labs/eletromagnetismo/quatro-leis`). Não usa dados externos nem pipeline Python.
+
+## Ideia
+Cada equação de Maxwell vira um brinquedo que dá para mexer, com a lei dita em palavras simples antes
+da fórmula. Quem não sabe física deve sair com a ideia, e quem sabe, com a fórmula certa no lugar certo.
+Uma versão anterior (FDTD 2D, "Maxwell ao vivo") foi descartada: bonita, mas sem nada que explicasse
+o que se via.
+
+## Os quatro brinquedos
+| Etapa | Lei | Brinquedo | O que mostra |
+|---|---|---|---|
+| 1 Cargas | Gauss | Cargas arrastáveis e uma bolha que conta linhas | saem − entram = carga dentro |
+| 2 Ímãs | Gauss do magnetismo | Tesoura nos ímãs, bússolas | cortar nunca separa um polo; sempre N = S |
+| 3 Indução | Faraday | Ímã numa trilha, bobina, lâmpada | só o fluxo *mudando* acende; parado não |
+| 4 Ondas | Ampère-Maxwell | Carga que balança, onda 1D, carga receptora | E variável faz B e vice-versa; a luz tem atraso |
+
+## Como funciona por dentro
+- **Linhas de campo (1 e 2):** cargas-linha em 2D (campo ∝ 1/r), traçadas com RK2. Cada carga solta
+  10 linhas; as de uma carga negativa que não vêm de uma positiva partem dela "de trás para frente".
+  Assim a contagem na bolha dá exatamente a carga. Código: `lib/field.ts`.
+- **Fluxo do ímã (3):** número de linhas que cruzam a bobina, somando os dois polos mais o miolo do ímã
+  (o "degrau" que mantém Φ contínuo e faz o total tender a zero para uma bobina enorme).
+  EMF = −dΦ/dt, suavizada; o brilho da lâmpada é `1 − exp(−|EMF|/8)`.
+- **Onda (4):** leapfrog 1D com passo de Courant 1 (sem dispersão), bordas absorventes (Mur) e fonte
+  espalhada em 3 células (¼, ½, ¼) para não excitar o modo xadrez da grade. A carga é puxada de volta
+  ao eixo, então o deslocamento total é zero e sobra só a onda. Código: `lib/wave1d.ts`, `lib/wavesim.ts`.
+
+## Simplificações (sinalizadas no painel)
+- Mundo plano: o campo cai como 1/r, e não 1/r².
+- O campo fora do ímã usa polos pontuais; dentro, o caminho de volta é só desenhado.
+- Brilho da lâmpada calibrado para ser legível, não em volts.
+- A luz leva segundos para cruzar a tela, só para dar tempo de ver.
+
+## Ideias futuras
+Ver `plan.md`: FDTD com materiais como camada avançada, ímã no tubo de cobre (Faraday e Lenz).

@@ -7,6 +7,7 @@ GitHub Pages. Ideias de próximos labs: [`plan.md`](plan.md).
 | Área | Lab | Rota | O que é |
 | --- | --- | --- | --- |
 | Astrofísica | Astro Tweak | `/labs/astrofisica/astro-tweak` | Sandbox gravitacional do sistema solar (N corpos) |
+| Eletromagnetismo | As 4 leis | `/labs/eletromagnetismo/quatro-leis` | Quatro brinquedos, um por lei de Maxwell |
 
 ## Estrutura
 
