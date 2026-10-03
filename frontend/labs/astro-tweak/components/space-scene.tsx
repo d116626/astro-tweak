@@ -5,9 +5,15 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, Stars } from "@react-three/drei";
 import * as THREE from "three";
 import { FocusLabel } from "@/labs/astro-tweak/components/labels";
-import { BODY_COLORS, PLANET_LOOKS } from "@/labs/astro-tweak/components/planet-looks";
+import {
+  BODY_COLORS,
+  PLANET_LOOKS,
+} from "@/labs/astro-tweak/components/planet-looks";
 import { simTime } from "@/labs/astro-tweak/lib/sim-time";
-import { makeEarthTexture, makePlanetTexture } from "@/labs/astro-tweak/lib/procedural-textures";
+import {
+  makeEarthTexture,
+  makePlanetTexture,
+} from "@/labs/astro-tweak/lib/procedural-textures";
 import {
   advance,
   initialState,
@@ -66,7 +72,10 @@ const createPositions = (): Positions =>
   );
 
 /** Raio que a câmera enquadra na visão geral: até o planeta mais distante. */
-function systemRadius(params: AllParams, lost: Record<string, LostReason>): number {
+function systemRadius(
+  params: AllParams,
+  lost: Record<string, LostReason>,
+): number {
   const farthest = Math.max(
     ...SOLAR.planets
       .filter((p) => !lost[p.id])
@@ -129,6 +138,7 @@ function PlanetNode({
   timeScale,
   paused,
   focused,
+  lost,
   onFocus,
 }: {
   planet: PlanetData;
@@ -137,6 +147,7 @@ function PlanetNode({
   timeScale: number;
   paused: boolean;
   focused: boolean;
+  lost: boolean;
   onFocus: () => void;
 }) {
   const look = PLANET_LOOKS[planet.id];
@@ -180,15 +191,14 @@ function PlanetNode({
           </mesh>
         )}
       </group>
-      {!focused && (
-        <FocusLabel
-          color={BODY_COLORS[planet.id]}
-          offset={-18}
-          onClick={onFocus}
-        >
-          {planet.name}
-        </FocusLabel>
-      )}
+      <FocusLabel
+        color={BODY_COLORS[planet.id]}
+        offset={-18}
+        hidden={focused || lost}
+        onClick={onFocus}
+      >
+        {planet.name}
+      </FocusLabel>
     </group>
   );
 }
@@ -213,11 +223,14 @@ function Sun({ focused, onFocus }: { focused: boolean; onFocus: () => void }) {
           />
         </mesh>
       ))}
-      {!focused && (
-        <FocusLabel color={BODY_COLORS.sun} offset={-28} onClick={onFocus}>
-          Sol
-        </FocusLabel>
-      )}
+      <FocusLabel
+        color={BODY_COLORS.sun}
+        offset={-28}
+        hidden={focused}
+        onClick={onFocus}
+      >
+        Sol
+      </FocusLabel>
     </group>
   );
 }
@@ -344,7 +357,10 @@ function CameraRig({
     camera.position.add(move);
     last.current.goal.copy(goal);
     // ...e dissolve aos poucos o deslocamento deixado pela troca de foco.
-    move.copy(controls.target).sub(goal).multiplyScalar(1 - Math.exp(-dt * 4));
+    move
+      .copy(controls.target)
+      .sub(goal)
+      .multiplyScalar(1 - Math.exp(-dt * 4));
     controls.target.sub(move);
     camera.position.sub(move);
 
@@ -399,26 +415,25 @@ export function SpaceScene({
       />
       <Sun focused={focus === "sun"} onFocus={() => onFocus("sun")} />
 
-      {SOLAR.planets
-        .filter((planet) => !lost[planet.id])
-        .map((planet) => (
-          <group key={planet.id}>
-            <OrbitLine
-              id={planet.id}
-              active={focus === planet.id}
-              stateRef={stateRef}
-            />
-            <PlanetNode
-              planet={planet}
-              params={params[planet.id]}
-              positionsRef={positionsRef}
-              timeScale={timeScale}
-              paused={paused}
-              focused={focus === planet.id}
-              onFocus={() => onFocus(planet.id)}
-            />
-          </group>
-        ))}
+      {SOLAR.planets.map((planet) => (
+        <group key={planet.id} visible={!lost[planet.id]}>
+          <OrbitLine
+            id={planet.id}
+            active={focus === planet.id}
+            stateRef={stateRef}
+          />
+          <PlanetNode
+            planet={planet}
+            params={params[planet.id]}
+            positionsRef={positionsRef}
+            timeScale={timeScale}
+            paused={paused}
+            focused={focus === planet.id}
+            lost={!!lost[planet.id]}
+            onFocus={() => onFocus(planet.id)}
+          />
+        </group>
+      ))}
 
       <CameraRig
         focus={focus}

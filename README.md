@@ -28,6 +28,7 @@ scihub/
       hub/                     # componentes do hub (cards, órbitas decorativas)
       ui/                      # shadcn/ui compartilhado
     labs/
+      areas.ts                 # áreas da física (hero e seções do hub)
       registry.ts              # lista de labs exibidos no hub
       types.ts                 # tipo `Lab`
       <slug>/
@@ -59,10 +60,11 @@ just lint
 1. **Dados (se precisar):** crie `utils/labs/<nome>/` com `run() -> list[Path]` (use
    `utils.common.export.export_dataset`) e registre em `utils/labs/__init__.py`. Os JSONs saem em
    `frontend/public/data/<slug>/`.
-2. **Lab:** crie `frontend/labs/<slug>/` com `lab.ts` (metadados e `Preview`), `components/` e `lib/`.
+2. **Lab:** crie `frontend/labs/<slug>/` com `lab.ts` (metadados, `area` e `Preview`), `components/` e `lib/`.
 3. **Rota:** crie `frontend/app/labs/<slug>/page.tsx` renderizando a vista principal. Inclua um link
    `href="/"` de volta ao hub.
-4. **Hub:** adicione o lab em `frontend/labs/registry.ts`. O card aparece sozinho.
+4. **Hub:** adicione o lab em `frontend/labs/registry.ts`. O card aparece sozinho na seção da sua `area`
+   (as áreas ficam em `frontend/labs/areas.ts`; áreas sem lab mostram "em breve").
 
 ## Deploy
 

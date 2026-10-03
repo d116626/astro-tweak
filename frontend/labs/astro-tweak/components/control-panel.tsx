@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { ArrowLeft, ChevronDown, Pause, Play, RotateCcw } from "lucide-react";
+import { ChevronDown, House, Pause, Play, RotateCcw } from "lucide-react";
 import { BODY_COLORS } from "@/labs/astro-tweak/components/planet-looks";
 import { SimClockDisplay } from "@/labs/astro-tweak/components/sim-clock";
 import { Slider } from "@/components/ui/slider";
@@ -307,16 +307,18 @@ export function ControlPanel(props: ControlPanelProps) {
     <aside className="flex max-h-[52dvh] shrink-0 flex-col border-t border-white/10 bg-zinc-950 text-white pb-[env(safe-area-inset-bottom)] md:max-h-none md:w-[22rem] md:pb-0 md:border-l md:border-t-0">
       <div className="space-y-3 px-4 pb-3 pt-3 md:pt-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-widest">
+          <div className="flex items-center gap-2.5">
             <Link
               href="/"
-              className="-m-2 flex items-center gap-1.5 p-2 text-white/40 transition-colors hover:text-white"
+              aria-label="Voltar ao SciHub"
+              title="Voltar ao SciHub"
+              className="flex size-8 items-center justify-center rounded-full border border-white/15 text-white/60 transition-colors hover:border-white/40 hover:bg-white/10 hover:text-white"
             >
-              <ArrowLeft className="size-3" />
-              SciHub
+              <House className="size-4" />
             </Link>
-            <span className="text-white/20">/</span>
-            <span className="text-white/70">Astro Tweak</span>
+            <span className="text-[10px] font-medium uppercase tracking-widest text-white/70">
+              Astro Tweak
+            </span>
           </div>
           <button
             type="button"

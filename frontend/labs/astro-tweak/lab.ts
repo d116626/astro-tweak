@@ -3,6 +3,7 @@ import type { Lab } from "@/labs/types";
 
 export const astroTweak: Lab = {
   slug: "astro-tweak",
+  area: "astrofisica",
   name: "Astro Tweak",
   tagline: "O sistema solar na sua mão.",
   description:

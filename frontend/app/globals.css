@@ -145,3 +145,75 @@
     opacity: 1;
   }
 }
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Glifos animados das áreas da física (components/hub/area-glyph.tsx). */
+@keyframes g-x {
+  from { transform: translateX(calc(var(--dx) * -1)); }
+  to { transform: translateX(var(--dx)); }
+}
+@keyframes g-y {
+  from { transform: translateY(calc(var(--dy) * -1)); }
+  to { transform: translateY(var(--dy)); }
+}
+@keyframes g-swing {
+  from { transform: rotate(calc(var(--a) * -1)); }
+  to { transform: rotate(var(--a)); }
+}
+/* Pêndulo de Newton: a bola da esquerda (+) e a da direita (-) trocam o movimento. */
+@keyframes g-cradle-l {
+  0% { transform: rotate(32deg); animation-timing-function: ease-in; }
+  25%, 75% { transform: rotate(0); }
+  75% { animation-timing-function: ease-out; }
+  100% { transform: rotate(32deg); }
+}
+@keyframes g-cradle-r {
+  0%, 25% { transform: rotate(0); }
+  25% { animation-timing-function: ease-out; }
+  50% { transform: rotate(-32deg); animation-timing-function: ease-in; }
+  75%, 100% { transform: rotate(0); }
+}
+@keyframes g-wave {
+  to { transform: translateX(-80px); }
+}
+@keyframes g-dash {
+  to { stroke-dashoffset: -12; }
+}
+@keyframes g-flip {
+  from { transform: scaleY(1); }
+  to { transform: scaleY(-1); }
+}
+@keyframes g-bar {
+  from { transform: scaleY(0.7); }
+  to { transform: scaleY(1.15); }
+}
+@keyframes g-ring {
+  from { transform: scale(0.15); opacity: 0.8; }
+  to { transform: scale(1); opacity: 0; }
+}
+
+.g-x { animation: g-x var(--t, 2s) var(--ease, linear) var(--d, 0s) infinite alternate; }
+.g-y { animation: g-y var(--t, 2s) var(--ease, linear) var(--d, 0s) infinite alternate; }
+.g-swing { animation: g-swing var(--t, 2s) ease-in-out infinite alternate; }
+.g-cradle-l { animation: g-cradle-l 2.4s linear infinite; }
+.g-cradle-r { animation: g-cradle-r 2.4s linear infinite; }
+.g-wave { animation: g-wave var(--t, 3s) linear infinite; }
+.g-dash { stroke-dasharray: 2 4; animation: g-dash 0.9s linear infinite; }
+.g-flip { transform-origin: 50px 50px; animation: g-flip var(--t, 1.6s) ease-in-out infinite alternate; }
+.g-bar {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: g-bar var(--t, 1.6s) ease-in-out var(--d, 0s) infinite alternate;
+}
+.g-ring { transform-origin: 50px 50px; animation: g-ring 3s ease-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .g-x, .g-y, .g-swing, .g-cradle-l, .g-cradle-r, .g-wave, .g-dash, .g-flip, .g-bar, .g-ring {
+    animation: none;
+  }
+}

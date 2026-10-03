@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "SciHub",
   description:
-    "Laboratórios interativos de ciência: mude as leis, as constantes e as condições iniciais e veja o que acontece.",
+    "Laboratórios interativos de física, uma área por vez: mude as constantes e as condições iniciais e veja o que acontece.",
 };
 
 export const viewport: Viewport = {
